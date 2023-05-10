@@ -6,7 +6,6 @@ const {
 } = require("../api/app.controller");
 
 const app = express();
-app.use(express.json());
 
 app.get("/api", getStatus);
 

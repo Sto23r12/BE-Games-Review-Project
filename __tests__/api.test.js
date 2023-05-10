@@ -3,7 +3,6 @@ const app = require("../api/app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
-const categories = require("../db/data/test-data/categories");
 
 afterAll(() => {
   return db.end();
@@ -30,9 +29,17 @@ describe("/api/categories", () => {
       .expect(200)
       .then((response) => {
         response.body.categories.forEach((category) => {
-          console.log(category);
           expect(typeof category.description).toBe("string");
           expect(typeof category.slug).toBe("string");
+          expect(response.body.categories.length).toBe(4);
+          expect(response.body.categories[0]).toEqual({
+            slug: "euro game",
+            description: "Abstact games that involve little luck",
+          });
+          expect(response.body.categories[2]).toEqual({
+            slug: "dexterity",
+            description: "Games involving physical skill",
+          });
         });
       });
   });
