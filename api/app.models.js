@@ -28,7 +28,6 @@ exports.getReview = (sort_by = "created_at") => {
       "SELECT r.review_id, r.title, r.category, r.designer, r.owner, r.review_img_url, r.created_at, r.votes, COUNT(c.comment_id) AS comment_count FROM reviews AS r LEFT JOIN comments AS c ON r.review_id = c.review_id GROUP BY r.review_id ORDER BY created_at DESC"
     )
     .then((reviews) => {
-      console.log(reviews.rows);
       return reviews.rows;
     });
 };

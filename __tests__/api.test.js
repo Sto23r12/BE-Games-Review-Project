@@ -82,7 +82,6 @@ describe("Returns with the correct JSON endpoint", () => {
       .get("/api/reviews")
       .expect(200)
       .then((response) => {
-        console.log(response.body);
         response.body.reviews.forEach((review) => {
           expect(typeof review.review_id).toBe("number");
           expect(typeof review.title).toBe("string");
