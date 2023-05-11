@@ -3,6 +3,7 @@ const app = require("../api/app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
+const endpoint = require("../endpoints.json");
 
 afterAll(() => {
   return db.end();
@@ -41,6 +42,21 @@ describe("/api/categories", () => {
             description: "Games involving physical skill",
           });
         });
+      });
+  });
+});
+
+describe("Returns with the correct JSON endpoint", () => {
+  test("/api/categories", () => {
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+      .then((response) => {
+        const input = Object.keys(
+          endpoint["GET /api/categories"].exampleResponse
+        );
+        const expectedOutput = Object.keys(response.body);
+        expect(input).toMatchObject(expectedOutput);
       });
   });
 });
