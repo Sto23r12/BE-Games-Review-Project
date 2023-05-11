@@ -27,3 +27,12 @@ exports.getReviewsById = (req, response, next) => {
       next(err);
     });
 };
+exports.getReviews = (request, response, next) => {
+  getReview()
+    .then((review) => {
+      response.status(200).send({ reviews: review });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};

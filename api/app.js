@@ -17,6 +17,8 @@ app.get("/api", getStatus);
 
 app.get("/api/reviews/:review_id", getReviewsById);
 
+app.get("/api/reviews", getReviews);
+
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });

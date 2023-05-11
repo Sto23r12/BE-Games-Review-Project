@@ -77,4 +77,28 @@ describe("Returns with the correct JSON endpoint", () => {
         });
       });
   });
+  test("/api/reviews", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((response) => {
+        console.log(response.body);
+        response.body.reviews.forEach((review) => {
+          expect(typeof review.review_id).toBe("number");
+          expect(typeof review.title).toBe("string");
+          expect(typeof review.created_at).toBe("string");
+          expect(typeof review.votes).toBe("number");
+          expect(typeof review.comment_count).toBe("string");
+          expect(typeof review.owner).toBe("string");
+          expect(typeof review.category).toBe("string");
+          expect(typeof review.review_img_url).toBe("string");
+          expect(typeof review.designer).toBe("string");
+          const input = Object.keys(
+            endpoint["GET /api/reviews"].exampleResponse
+          );
+          const expectedOutput = Object.keys(response.body);
+          expect(input).toMatchObject(expectedOutput);
+        });
+      });
+  });
 });
