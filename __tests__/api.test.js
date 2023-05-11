@@ -59,4 +59,22 @@ describe("Returns with the correct JSON endpoint", () => {
         expect(input).toMatchObject(expectedOutput);
       });
   });
+  test("/api/reviews/:review_id", () => {
+    const review_id = 3;
+    return request(app)
+      .get(`/api/reviews/${review_id}`)
+      .expect(200)
+      .then((response) => {
+        response.body.review.forEach((review) => {
+          expect(typeof review.title).toBe("string");
+          expect(typeof review.created_at).toBe("string");
+          expect(typeof review.votes).toBe("number");
+          const input = Object.keys(
+            endpoint["GET /api/reviews/:review_id"].exampleResponse
+          );
+          const expectedOutput = Object.keys(response.body);
+          expect(input).toMatchObject(expectedOutput);
+        });
+      });
+  });
 });
