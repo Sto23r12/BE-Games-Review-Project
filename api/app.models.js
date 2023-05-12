@@ -24,16 +24,15 @@ exports.getReview = () => {
 };
 
 exports.getComment = (id) => {
-  if (!id) {
-    return [];
-  } else {
-    return db
-      .query(
-        "SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC",
-        [id]
-      )
-      .then((comments) => {
-        return comments.rows;
-      });
-  }
+  return db
+    .query(
+      "SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC",
+      [id]
+    )
+    .then((comments) => {
+      if (comments.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Comment not found!" });
+      }
+      return comments.rows;
+    });
 };

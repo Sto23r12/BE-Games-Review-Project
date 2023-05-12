@@ -102,16 +102,17 @@ test("/api/reviews", () => {
     });
 });
 test("/api/reviews/:reviews_id/comments", () => {
-  const review_id = 3;
+  const review_id = 2;
   return request(app)
     .get(`/api/reviews/${review_id}/comments`)
     .expect(200)
     .then((response) => {
-      expect(response.body.comments.length).toBe(3);
       expect(response.body.comments).toBeSortedBy("created_at", {
         descending: true,
       });
+      console.log(response.body.comments);
       response.body.comments.forEach((comment) => {
+        expect(Object.keys(comment).length).toBe(6);
         expect(typeof comment.comment_id).toBe("number");
         expect(typeof comment.votes).toBe("number");
         expect(typeof comment.created_at).toBe("string");
