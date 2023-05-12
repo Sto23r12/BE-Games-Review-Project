@@ -65,16 +65,16 @@ describe("Returns with the correct JSON endpoint", () => {
       .get(`/api/reviews/${review_id}`)
       .expect(200)
       .then((response) => {
-        response.body.review.forEach((review) => {
-          expect(typeof review.title).toBe("string");
-          expect(typeof review.created_at).toBe("string");
-          expect(typeof review.votes).toBe("number");
-          const input = Object.keys(
-            endpoint["GET /api/reviews/:review_id"].exampleResponse
-          );
-          const expectedOutput = Object.keys(response.body);
-          expect(input).toMatchObject(expectedOutput);
-        });
+        const review = response.body.review[0];
+        expect(typeof review.title).toBe("string");
+        expect(typeof review.created_at).toBe("string");
+        expect(typeof review.votes).toBe("number");
+        expect(typeof review.review_id).toBe("number");
+        expect(typeof review.designer).toBe("string");
+        expect(typeof review.review_img_url).toBe("string");
+        expect(typeof review.category).toBe("string");
+        expect(typeof review.review_body).toBe("string");
+        expect(typeof review.owner).toBe("string");
       });
   });
 });
