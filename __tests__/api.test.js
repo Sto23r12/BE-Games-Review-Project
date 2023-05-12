@@ -24,29 +24,6 @@ describe("/api", () => {
   });
 });
 
-describe("/api/categories", () => {
-  test('GET - Status: 200 - returns an array of category objects, each of which having the properties "slug", "description"', () => {
-    return request(app)
-      .get("/api/categories")
-      .expect(200)
-      .then((response) => {
-        response.body.categories.forEach((category) => {
-          expect(typeof category.description).toBe("string");
-          expect(typeof category.slug).toBe("string");
-          expect(response.body.categories.length).toBe(4);
-          expect(response.body.categories[0]).toEqual({
-            slug: "euro game",
-            description: "Abstact games that involve little luck",
-          });
-          expect(response.body.categories[2]).toEqual({
-            slug: "dexterity",
-            description: "Games involving physical skill",
-          });
-        });
-      });
-  });
-});
-
 describe("Returns with the correct JSON endpoint", () => {
   test("/api/categories", () => {
     return request(app)
