@@ -1,11 +1,22 @@
 const db = "../db/connection.js";
 const { categoryData } = require("../db/data/test-data");
 const { request, response } = require("./app");
-const { getCategory, getReview, getReviewById } = require("./app.models");
+const {
+  getCategory,
+  getReview,
+  getReviewById,
+  getEndpoints,
+} = require("./app.models");
 const { endpoint } = require("../endpoints.json");
 
 exports.getStatus = (request, response) => {
   response.status(200).send({ message: "all ok" });
+};
+
+exports.getEndpoint = (request, response) => {
+  getEndpoints().then((endpoint) => {
+    response.status(200).send({ endpoints: endpoint });
+  });
 };
 
 exports.getCategories = (request, response, next) => {

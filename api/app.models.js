@@ -1,6 +1,12 @@
 const db = require("../db/connection");
 const { request } = require("./app");
 
+exports.getEndpoints = () => {
+  return db.query("SELECT * FROM nc_games_test").then((endpoints) => {
+    return endpoints.rows;
+  });
+};
+
 exports.getCategory = () => {
   return db.query("SELECT * FROM categories").then((categories) => {
     return categories.rows;
