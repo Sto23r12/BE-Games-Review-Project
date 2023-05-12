@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
 const endpoint = require("../endpoints.json");
+const sorted = require("jest-sorted");
 
 afterAll(() => {
   return db.end();
@@ -59,4 +60,44 @@ describe("Returns with the correct JSON endpoint", () => {
         expect(input).toMatchObject(expectedOutput);
       });
   });
+  test("/api/reviews/:review_id", () => {
+    const review_id = 3;
+    return request(app)
+      .get(`/api/reviews/${review_id}`)
+      .expect(200)
+      .then((response) => {
+        const review = response.body.review[0];
+        expect(typeof review.title).toBe("string");
+        expect(typeof review.created_at).toBe("string");
+        expect(typeof review.votes).toBe("number");
+        expect(typeof review.review_id).toBe("number");
+        expect(typeof review.designer).toBe("string");
+        expect(typeof review.review_img_url).toBe("string");
+        expect(typeof review.category).toBe("string");
+        expect(typeof review.review_body).toBe("string");
+        expect(typeof review.owner).toBe("string");
+      });
+  });
+});
+test("/api/reviews", () => {
+  return request(app)
+    .get("/api/reviews")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.reviews.length).toBe(13);
+      expect(response.body.reviews).toBeSortedBy("created_at", {
+        descending: true,
+      });
+      response.body.reviews.forEach((review) => {
+        expect(typeof review.review_id).toBe("number");
+        expect(typeof review.title).toBe("string");
+        expect(typeof review.created_at).toBe("string");
+        expect(typeof review.votes).toBe("number");
+        expect(typeof review.comment_count).toBe("string");
+        expect(typeof review.owner).toBe("string");
+        expect(typeof review.category).toBe("string");
+        expect(typeof review.review_img_url).toBe("string");
+        expect(typeof review.designer).toBe("string");
+      });
+    });
 });
