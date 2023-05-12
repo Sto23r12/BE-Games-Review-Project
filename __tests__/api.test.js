@@ -101,3 +101,23 @@ test("/api/reviews", () => {
       });
     });
 });
+test("/api/reviews/:reviews_id/comments", () => {
+  const review_id = 3;
+  return request(app)
+    .get(`/api/reviews/${review_id}/comments`)
+    .expect(200)
+    .then((response) => {
+      expect(response.body.comments.length).toBe(3);
+      expect(response.body.comments).toBeSortedBy("created_at", {
+        descending: true,
+      });
+      response.body.comments.forEach((comment) => {
+        expect(typeof comment.comment_id).toBe("number");
+        expect(typeof comment.votes).toBe("number");
+        expect(typeof comment.created_at).toBe("string");
+        expect(typeof comment.author).toBe("string");
+        expect(typeof comment.body).toBe("string");
+        expect(typeof comment.review_id).toBe("number");
+      });
+    });
+});

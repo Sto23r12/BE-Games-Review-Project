@@ -22,3 +22,18 @@ exports.getReview = () => {
       return reviews.rows;
     });
 };
+
+exports.getComment = (id) => {
+  if (!id) {
+    return [];
+  } else {
+    return db
+      .query(
+        "SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC",
+        [id]
+      )
+      .then((comments) => {
+        return comments.rows;
+      });
+  }
+};
