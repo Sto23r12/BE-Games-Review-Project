@@ -56,6 +56,14 @@ describe("/api/categories", () => {
 });
 
 describe("Returns with the correct JSON endpoint", () => {
+  test("/api", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        console.log(response.body.endpoints);
+      });
+  });
   test("/api/categories", () => {
     return request(app)
       .get("/api/categories")

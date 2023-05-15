@@ -1,13 +1,14 @@
 const db = require("../db/connection");
 const { request } = require("./app");
+const endpoints = require("../endpoints.json");
 
 exports.getEndpoints = () => {
   return db
     .query(
       "SELECT * FROM information_schema.tables WHERE table_schema = 'nc_games_test'"
     )
-    .then((endpoints) => {
-      return endpoints.rows;
+    .then((endpoint) => {
+      return { endpoint: endpoints };
     });
 };
 
