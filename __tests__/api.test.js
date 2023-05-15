@@ -14,14 +14,6 @@ beforeEach(() => {
 });
 
 describe("/api", () => {
-  // test("GET - Status: 200 - returns an object with message 'all ok'", () => {
-  //   return request(app)
-  //     .get("/api")
-  //     .expect(200)
-  //     .then((response) => {
-  //       expect(response.body).toEqual({ message: "all ok" });
-  //     });
-  // });
   test("GET - Status: 200 - returns all endpoints which are available to access", () => {
     return request(app)
       .get("/api")
@@ -61,7 +53,10 @@ describe("Returns with the correct JSON endpoint", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-        console.log(response.body.endpoints);
+        const input = Object.keys(response.body.endpoints.endpoint);
+        console.log(input);
+        const expectedOutput = Object.keys(endpoint);
+        expect(input).toEqual(expectedOutput);
       });
   });
   test("/api/categories", () => {
