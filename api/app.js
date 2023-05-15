@@ -7,6 +7,7 @@ const {
   getEndpoints,
   getReviewsById,
   getEndpoint,
+  getCommentsById,
 } = require("../api/app.controller");
 
 const app = express();
@@ -19,6 +20,8 @@ app.get("/api", getEndpoint);
 app.get("/api/reviews/:review_id", getReviewsById);
 
 app.get("/api/reviews", getReviews);
+
+app.get("/api/reviews/:review_id/comments", getCommentsById);
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {

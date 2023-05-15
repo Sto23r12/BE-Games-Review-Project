@@ -32,7 +32,6 @@ describe("/api/categories", () => {
         .expect(200)
         .then((response) => {
           const input = response.body.endpoints.endpoint;
-          console.log(input);
           const expectedOutput = Object.keys(endpoint);
           expect(input).toMatchObject(expectedOutput);
         });
@@ -110,5 +109,44 @@ test("/api/reviews", () => {
         expect(typeof review.review_img_url).toBe("string");
         expect(typeof review.designer).toBe("string");
       });
+    });
+});
+test("/api/reviews/:reviews_id/comments", () => {
+  const review_id = 2;
+  return request(app)
+    .get(`/api/reviews/${review_id}/comments`)
+    .expect(200)
+    .then((response) => {
+      expect(response.body.comments).toBeSortedBy("created_at", {
+        descending: true,
+      });
+      response.body.comments.forEach((comment) => {
+        expect(Object.keys(comment).length).toBe(6);
+        expect(typeof comment.comment_id).toBe("number");
+        expect(typeof comment.votes).toBe("number");
+        expect(typeof comment.created_at).toBe("string");
+        expect(typeof comment.author).toBe("string");
+        expect(typeof comment.body).toBe("string");
+        expect(typeof comment.review_id).toBe("number");
+      });
+    });
+});
+test("returns an error message of 'Comment not found!' and error 404 if review_id is valid but has no comments", () => {
+  const review_id = 1;
+  return request(app)
+    .get(`/api/reviews/${review_id}/comments`)
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({ msg: "Comment not found!" });
+    });
+});
+test('returns an error message of "Invalid id number!" and error 404 if review_id is not valid', () => {
+  const review_id = 45;
+  return request(app)
+    .get(`/api/reviews/${review_id}/comments`)
+    .expect(403)
+    .then((response) => {
+      console.log(response.body);
+      expect(response.body).toEqual({ msg: "Invalid id number!" });
     });
 });
