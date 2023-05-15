@@ -53,10 +53,10 @@ describe("Returns with the correct JSON endpoint", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-        const input = Object.keys(response.body.endpoints.endpoint);
+        const input = response.body.endpoints.endpoint;
         console.log(input);
         const expectedOutput = Object.keys(endpoint);
-        expect(input).toEqual(expectedOutput);
+        expect(input).toMatchObject(expectedOutput);
       });
   });
   test("/api/categories", () => {

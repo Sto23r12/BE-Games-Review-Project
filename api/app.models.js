@@ -8,7 +8,7 @@ exports.getEndpoints = () => {
       "SELECT * FROM information_schema.tables WHERE table_schema = 'nc_games_test'"
     )
     .then((endpoint) => {
-      return { endpoint: endpoints };
+      return { endpoint: Object.keys(endpoints) };
     });
 };
 
