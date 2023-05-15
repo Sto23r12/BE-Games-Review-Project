@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.get("/api/categories", getCategories);
 
-app.get("/api", getStatus, getEndpoint);
+app.get("/api", getEndpoint);
 
 app.get("/api/reviews/:review_id", getReviewsById);
 

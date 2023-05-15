@@ -15,6 +15,7 @@ exports.getStatus = (request, response) => {
 
 exports.getEndpoint = (request, response) => {
   getEndpoints().then((endpoint) => {
+    console.log(endpoint);
     response.status(200).send({ endpoints: endpoint });
   });
 };

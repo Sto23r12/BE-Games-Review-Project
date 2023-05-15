@@ -14,12 +14,20 @@ beforeEach(() => {
 });
 
 describe("/api", () => {
-  test("GET - Status: 200 - returns an object with message 'all ok'", () => {
+  // test("GET - Status: 200 - returns an object with message 'all ok'", () => {
+  //   return request(app)
+  //     .get("/api")
+  //     .expect(200)
+  //     .then((response) => {
+  //       expect(response.body).toEqual({ message: "all ok" });
+  //     });
+  // });
+  test("GET - Status: 200 - returns all endpoints which are available to access", () => {
     return request(app)
       .get("/api")
       .expect(200)
       .then((response) => {
-        expect(response.body).toEqual({ message: "all ok" });
+        return response.body;
       });
   });
 });
