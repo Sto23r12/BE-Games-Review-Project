@@ -1,6 +1,7 @@
 const db = require("../db/connection");
 const { request } = require("./app");
 const endpoints = require("../endpoints.json");
+const comments = require("../db/data/test-data/comments");
 
 exports.getEndpoints = () => {
   return db
@@ -48,5 +49,17 @@ exports.getComment = (id) => {
         }
         return comments.rows;
       }
+    });
+};
+
+exports.postComment = (review_id, username, body) => {
+  // console.log(review_id, username, body);
+  return db
+    .query(
+      "INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
+      [review_id, username, body]
+    )
+    .then((result) => {
+      return result.rows[0];
     });
 };

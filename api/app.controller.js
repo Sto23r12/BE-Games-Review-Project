@@ -1,12 +1,13 @@
 const db = "../db/connection.js";
 const { categoryData } = require("../db/data/test-data");
-const { request, response } = require("./app");
+const { request, response, use } = require("./app");
 const {
   getCategory,
   getReview,
   getReviewById,
   getEndpoints,
   getComment,
+  postComment,
 } = require("./app.models");
 const { endpoint } = require("../endpoints.json");
 
@@ -53,6 +54,22 @@ exports.getCommentsById = (request, response, next) => {
   getComment(request.params.review_id)
     .then((comments) => {
       response.status(200).send({ comments: comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postComments = (request, response, next) => {
+  const { username, body } = request.body;
+  const { review_id } = request.params;
+
+  if (!username || !body) {
+    return response.status(404).send({ msg: "No author found" });
+  }
+  postComment(review_id, username, body)
+    .then((postedComment) => {
+      response.status(201).send(postedComment);
     })
     .catch((err) => {
       next(err);

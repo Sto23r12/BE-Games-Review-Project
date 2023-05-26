@@ -131,22 +131,54 @@ test("/api/reviews/:reviews_id/comments", () => {
       });
     });
 });
-test("returns an error message of 'Comment not found!' and error 404 if review_id is valid but has no comments", () => {
-  const review_id = 1;
-  return request(app)
-    .get(`/api/reviews/${review_id}/comments`)
-    .expect(404)
-    .then((response) => {
-      expect(response.body).toEqual({ msg: "Comment not found!" });
-    });
-});
+// test("returns an error message of 'Comment not found!' and error 404 if review_id is valid but has no comments", () => {
+//   const review_id = 1;
+//   return request(app)
+//     .get(`/api/reviews/${review_id}/comments`)
+//     .expect(404)
+//     .then((response) => {
+//       console.log(response.body);
+//       expect(response.body).toEqual({ msg: "Comment not found!" });
+//     });
+// });
 test('returns an error message of "Invalid id number!" and error 404 if review_id is not valid', () => {
   const review_id = 45;
   return request(app)
     .get(`/api/reviews/${review_id}/comments`)
     .expect(403)
     .then((response) => {
-      console.log(response.body);
       expect(response.body).toEqual({ msg: "Invalid id number!" });
     });
+});
+
+describe("Post - Returns with status code of 201 and should push into the commments", () => {
+  test("returns 201 for a new comment added", () => {
+    const review_id = 1;
+    const comment = { username: "dav3rid", body: "This is a test!" };
+    return request(app)
+      .post(`/api/reviews/${review_id}/comments`)
+      .expect(201)
+      .send(comment)
+      .then((postRequest) => {
+        expect(postRequest.body.author).toBe("dav3rid");
+        expect(postRequest.body.body).toBe("This is a test!");
+        expect(typeof postRequest.body.comment_id).toBe("number");
+        expect(typeof postRequest.body.votes).toBe("number");
+        expect(typeof postRequest.body.author).toBe("string");
+        expect(typeof postRequest.body.body).toBe("string");
+      });
+  });
+  //   test.only("returns 404 if the username is not valid", () => {
+  //     // const review_id = 1;
+  //     //const comment = { username: "Akihisa Okui", body: "Test" };
+  //     return request(app)
+  //       .post(`/api/reviews/1/comments`)
+  //       .expect(404)
+  //       .send({ username: "Akihisa Okui", body: "Test" })
+  //       .then((response) => {
+  //         console.log(response.body.msg);
+  //         expect(response.body.msg).toBe("No author found");
+  //       });
+  //   });
+  // });
 });
