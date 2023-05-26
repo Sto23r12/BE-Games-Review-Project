@@ -1,6 +1,3 @@
-const db = "../db/connection.js";
-const { categoryData } = require("../db/data/test-data");
-const { request, response, use } = require("./app");
 const {
   getCategory,
   getReview,
@@ -64,7 +61,7 @@ exports.postComments = (request, response, next) => {
   const { username, body } = request.body;
   const { review_id } = request.params;
 
-  if (!username || !body) {
+  if (!username) {
     return response.status(404).send({ msg: "No author found" });
   }
   postComment(review_id, username, body)

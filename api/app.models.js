@@ -1,7 +1,5 @@
 const db = require("../db/connection");
-const { request } = require("./app");
 const endpoints = require("../endpoints.json");
-const comments = require("../db/data/test-data/comments");
 
 exports.getEndpoints = () => {
   return db
@@ -41,25 +39,29 @@ exports.getComment = (id) => {
       [id]
     )
     .then((comments) => {
-      if (id <= 0 || id >= 14) {
-        return Promise.reject({ status: 403, msg: "Invalid id number!" });
-      } else {
-        if (comments.rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "Comment not found!" });
-        }
-        return comments.rows;
+      // if (!comments.rows.length) {
+      //   return Promise.reject({ status: 400, msg: "Invalid id number!" });
+      // } else {
+      if (!comments.rows.length) {
+        return Promise.reject({ status: 404, msg: "Comment not found!" });
       }
+      return comments.rows;
     });
 };
 
 exports.postComment = (review_id, username, body) => {
   // console.log(review_id, username, body);
+
   return db
     .query(
       "INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
       [review_id, username, body]
     )
     .then((result) => {
-      return result.rows[0];
+      if (!username || !body) {
+        return Promise.reject({ status: 400, msg: "Invalid request" });
+      } else {
+        return result.rows[0];
+      }
     });
 };
