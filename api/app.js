@@ -15,6 +15,7 @@ const {
 } = require("../api/app.controller");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/categories", getCategories);
@@ -30,8 +31,6 @@ app.get("/api/reviews/:review_id/comments", getCommentsById);
 app.post("/api/reviews/:review_id/comments", postComments);
 
 app.patch("/api/reviews/:review_id", patchReviewById);
-
-app.use(cors());
 
 app.use((err, req, res, next) => {
   console.log(err);
