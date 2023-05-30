@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const {
   getStatus,
   getCategories,
@@ -29,6 +30,8 @@ app.get("/api/reviews/:review_id/comments", getCommentsById);
 app.post("/api/reviews/:review_id/comments", postComments);
 
 app.patch("/api/reviews/:review_id", patchReviewById);
+
+app.use(cors());
 
 app.use((err, req, res, next) => {
   console.log(err);
