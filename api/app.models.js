@@ -1,5 +1,6 @@
 const db = require("../db/connection");
 const endpoints = require("../endpoints.json");
+const { response } = require("./app");
 
 exports.getEndpoints = () => {
   return db
@@ -20,6 +21,9 @@ exports.getReviewById = (id) => {
   return db
     .query("SELECT * FROM reviews WHERE review_id = $1;", [id])
     .then((review) => {
+      if (review.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
       return review.rows;
     });
 };

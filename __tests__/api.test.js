@@ -265,17 +265,17 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(response.body.msg).toBe("Invalid request");
       });
   });
-  // test("PATCH - status 404, responds with error message when object with passed review number doesn't exist", () => {
-  //   const infoToUpdate = { inc_votes: 15 };
-  //   const review_id = 88888;
-  //   return request(app)
-  //     .patch(`/api/reviews/${review_id}`)
-  //     .send(infoToUpdate)
-  //     .expect(404)
-  //     .then((response) => {
-  //       expect(response.body.msg).toBe("Not found");
-  //     });
-  // });
+  test("PATCH - status 404, responds with error message when object with passed review number doesn't exist", () => {
+    const infoToUpdate = { inc_votes: 15 };
+    const review_id = 88888;
+    return request(app)
+      .patch(`/api/reviews/${review_id}`)
+      .send(infoToUpdate)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Not found");
+      });
+  });
   test("PATCH - status 400, responds with error message when passed review number is invalid", () => {
     const infoToUpdate = { inc_votes: 15 };
     return request(app)

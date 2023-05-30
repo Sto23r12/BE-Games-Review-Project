@@ -31,6 +31,7 @@ app.post("/api/reviews/:review_id/comments", postComments);
 app.patch("/api/reviews/:review_id", patchReviewById);
 
 app.use((err, req, res, next) => {
+  console.log(err);
   if (err.status === 400) {
     res.status(400).send({ msg: "Invalid request" });
   } else {
