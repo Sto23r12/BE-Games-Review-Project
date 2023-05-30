@@ -5,8 +5,10 @@ const {
   getEndpoints,
   getComment,
   postComment,
+  updateReviewById,
 } = require("./app.models");
 const { endpoint } = require("../endpoints.json");
+const { request } = require("./app");
 
 exports.getStatus = (request, response) => {
   response.status(200).send({ message: "all ok" });
@@ -61,8 +63,8 @@ exports.postComments = (request, response, next) => {
   const { username, body } = request.body;
   const { review_id } = request.params;
 
-  if (!username) {
-    return response.status(404).send({ msg: "No author found" });
+  if (!username || !body) {
+    return response.status(400).send({ msg: "Invalid Request" });
   }
   postComment(review_id, username, body)
     .then((postedComment) => {
@@ -70,5 +72,19 @@ exports.postComments = (request, response, next) => {
     })
     .catch((err) => {
       next(err);
+    });
+};
+
+exports.patchReviewById = (request, response, next) => {
+  const { review_id } = request.params;
+  if (!review_id) {
+    return response.status(404).send({ msg: "Not found" });
+  }
+  updateReviewById(request.body, review_id)
+    .then((updatedReview) => {
+      response.status(200).send({ review: updatedReview });
+    })
+    .catch((error) => {
+      next(error);
     });
 };

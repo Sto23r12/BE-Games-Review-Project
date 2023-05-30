@@ -38,20 +38,15 @@ exports.getComment = (id) => {
       "SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC",
       [id]
     )
-    .then((comments) => {
-      // if (!comments.rows.length) {
-      //   return Promise.reject({ status: 400, msg: "Invalid id number!" });
-      // } else {
-      if (!comments.rows.length) {
-        return Promise.reject({ status: 404, msg: "Comment not found!" });
+    .then((response) => {
+      if (!response.rows.length) {
+        return Promise.reject({ status: 404, msg: "Not found" });
       }
-      return comments.rows;
+      return response.rows;
     });
 };
 
 exports.postComment = (review_id, username, body) => {
-  // console.log(review_id, username, body);
-
   return db
     .query(
       "INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
@@ -64,4 +59,31 @@ exports.postComment = (review_id, username, body) => {
         return result.rows[0];
       }
     });
+};
+
+exports.updateReviewById = (update, reviewId) => {
+  if (!update.hasOwnProperty("inc_votes")) {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid request",
+    });
+  } else if (typeof update.inc_votes !== "number") {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid request",
+    });
+  }
+  if (!reviewId) {
+    return Promise.reject({
+      status: 404,
+      msg: "Not found",
+    });
+  }
+  const queryString = `UPDATE reviews SET votes = votes + ($1) WHERE review_id = ($2) RETURNING *;`;
+  const queryValues = [update.inc_votes, reviewId];
+  return this.getReviewById(reviewId).then(() => {
+    return db.query(queryString, queryValues).then(({ rows }) => {
+      return rows[0];
+    });
+  });
 };

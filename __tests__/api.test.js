@@ -137,18 +137,18 @@ test("returns an error message of 'Comment not found!' and error 404 if review_i
     .get(`/api/reviews/${review_id}/comments`)
     .expect(404)
     .then((response) => {
-      expect(response.body).toEqual({ msg: "Comment not found!" });
+      expect(response.body).toEqual({ msg: "Not found" });
     });
 });
-// test('returns an error message of "Invalid id number!" and error 404 if review_id is not valid', () => {
-//   const review_id = 45;
-//   return request(app)
-//     .get(`/api/reviews/${review_id}/comments`)
-//     .expect(400)
-//     .then((response) => {
-//       expect(response.body).toEqual({ msg: "Invalid id number!" });
-//     });
-// });
+test('returns an error message of "Not found!" and status 404 if review_id does not exist', () => {
+  const review_id = 45;
+  return request(app)
+    .get(`/api/reviews/${review_id}/comments`)
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({ msg: "Not found" });
+    });
+});
 
 describe("Post - Returns with status code of 201 and should push into the commments", () => {
   test("returns 201 for a new comment added", () => {
@@ -199,15 +199,91 @@ describe("Post - Returns with status code of 201 and should push into the commme
         expect(typeof postRequest.body.body).toBe("string");
       });
   });
-  //   test("should return with 400 if an invalid id is passed", () => {
-  //     // const review_id = "Not an id";
-  //     const comment = { username: "dav3rid", body: "This is a test!" };
-  //     return request(app)
-  //       .post(`/api/reviews/not-an-id/comments`)
-  //       .expect(400)
-  //       .send(comment)
-  //       .then((postRequest) => {
-  //         expect(postRequest.body.msg).toBe("Invalid id number!");
-  //       });
-  //   });
+  test("should return with 400 if an invalid id is passed", () => {
+    // const review_id = "Not an id";
+    const comment = { username: "dav3rid", body: "This is a test!" };
+    return request(app)
+      .post(`/api/reviews/not-an-id/comments`)
+      .expect(400)
+      .send(comment)
+      .then((postRequest) => {
+        expect(postRequest.body.msg).toBe("Invalid request");
+      });
+  });
+  test("should respond with a status 400 when missing required fields, e.g. no username or body properties passed", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .expect(400)
+      .send({}) //can have one or none
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid Request");
+      });
+  });
+});
+
+describe("PATCH /api/reviews/:review_id", () => {
+  test("PATCH - status 200, responds with successfully updated review object", () => {
+    const infoToUpdate = { inc_votes: 15 };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(infoToUpdate)
+      .expect(200)
+      .then((response) => {
+        const updatedReview = response.body.review;
+        expect(updatedReview.votes).toBe(16);
+      });
+  });
+  test("PATCH - status 200 - responds with successfully updated review object if additional property passed except of necessary one, additional property has to be ignored", () => {
+    const infoToUpdate = { inc_votes: 15, title: "Something" };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(infoToUpdate)
+      .expect(200)
+      .then((response) => {
+        const updatedReview = response.body.review;
+        expect(updatedReview.votes).toBe(16);
+        expect(updatedReview.title).toBe("Agricola");
+      });
+  });
+  test("PATCH - status 400 - responds with error message when required update field is missing", () => {
+    const infoToUpdate = {};
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(infoToUpdate)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid request");
+      });
+  });
+  test("PATCH - status 400 - responds with error message when update field has incorrect type", () => {
+    const infoToUpdate = { inc_votes: "15" };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(infoToUpdate)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid request");
+      });
+  });
+  // test("PATCH - status 404, responds with error message when object with passed review number doesn't exist", () => {
+  //   const infoToUpdate = { inc_votes: 15 };
+  //   const review_id = 88888;
+  //   return request(app)
+  //     .patch(`/api/reviews/${review_id}`)
+  //     .send(infoToUpdate)
+  //     .expect(404)
+  //     .then((response) => {
+  //       expect(response.body.msg).toBe("Not found");
+  //     });
+  // });
+  test("PATCH - status 400, responds with error message when passed review number is invalid", () => {
+    const infoToUpdate = { inc_votes: 15 };
+    return request(app)
+      .patch("/api/reviews/something")
+      .send(infoToUpdate)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid request");
+      });
+  });
 });

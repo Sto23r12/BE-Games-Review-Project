@@ -9,6 +9,8 @@ const {
   getEndpoint,
   getCommentsById,
   postComments,
+  updateVotes,
+  patchReviewById,
 } = require("../api/app.controller");
 
 const app = express();
@@ -26,9 +28,18 @@ app.get("/api/reviews/:review_id/comments", getCommentsById);
 
 app.post("/api/reviews/:review_id/comments", postComments);
 
+app.patch("/api/reviews/:review_id", patchReviewById);
+
 app.use((err, req, res, next) => {
   if (err.status === 400) {
-    console.log(err.status);
+    res.status(400).send({ msg: "Invalid request" });
+  } else {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  if (err.code === "22P02" || err.code === "23502") {
     res.status(400).send({ msg: "Invalid request" });
   } else {
     next(err);
